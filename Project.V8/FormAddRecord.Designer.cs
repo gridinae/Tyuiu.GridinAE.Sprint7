@@ -192,6 +192,7 @@
             Controls.Add(labelNumber_GAE);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "FormAddRecord";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Добавить запись";
             ResumeLayout(false);
             PerformLayout();

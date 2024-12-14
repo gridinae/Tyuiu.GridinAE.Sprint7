@@ -79,6 +79,7 @@
             buttonHelp_GAE.TabIndex = 7;
             toolTipMain.SetToolTip(buttonHelp_GAE, "Помощь");
             buttonHelp_GAE.UseVisualStyleBackColor = true;
+            buttonHelp_GAE.Click += buttonHelp_GAE_Click;
             // 
             // buttonStats_GAE
             // 
@@ -123,6 +124,7 @@
             buttonEdit_GAE.TabIndex = 2;
             toolTipMain.SetToolTip(buttonEdit_GAE, "Редактировать запись");
             buttonEdit_GAE.UseVisualStyleBackColor = true;
+            buttonEdit_GAE.Click += buttonEdit_GAE_Click;
             // 
             // buttonRemove_GAE
             // 

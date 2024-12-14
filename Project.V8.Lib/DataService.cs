@@ -19,4 +19,14 @@ public class DataService
 
         File.WriteAllText(filePath, outCsv.ToString().TrimEnd());
     }
+    public static bool IsCarNumberPresentInCsv(string filePath, string carNumber)
+    {
+        var csv = File.ReadAllText(filePath).Split('\n');
+        for (int i = 0; i < csv.Length; i++)
+        {
+            if (csv[i].Split(',').First() == carNumber)
+                return true;
+        }
+        return false;
+    }
 }
