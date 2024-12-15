@@ -102,6 +102,7 @@
             buttonFilter_GAE.TabIndex = 5;
             toolTipMain.SetToolTip(buttonFilter_GAE, "Фильтрация");
             buttonFilter_GAE.UseVisualStyleBackColor = true;
+            buttonFilter_GAE.Click += buttonFilter_GAE_Click;
             // 
             // buttonSearch_GAE
             // 

@@ -2,6 +2,7 @@ using Project.V8.Lib;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace Project.V8;
 
@@ -27,36 +28,30 @@ public partial class FormMain : Form
 
     private readonly string filePath = AppDomain.CurrentDomain.BaseDirectory + @"\Data.csv";
 
-    private string filterType = "";
-    private string filterString = "";
-
-
+    private List<string> filterRegion = ["Москва", "Тюмень", "Тверь", "Екатеринбург", "Санкт-Петербург", "Новосибирск"];
+    private List<string> filterBrand = ["Volvo", "Audi", "Nissan", "BMW", "Mercedes", "Opel", "Lada"];
+    private List<string> filterColor = ["Черный", "Белый", "Серый", "Синий", "Фиолетовый", "Красный", "Розовый", "Желтый", "Зеленый", "Коричневый"];
+    
     private void ReloadTable()
     {
         var selectedRows = dataGridViewMain_GAE.SelectedRows;
 
         string[][] data = DataService.ReadCsv(filePath);
+        List<string[]> filteredData = new();
+        foreach (string[] record in data)
+            if (filterRegion.Contains(record[1]) && filterBrand.Contains(record[2]) && filterColor.Contains(record[3]))
+                filteredData.Add(record);
 
         dataGridViewMain_GAE.Rows.Clear();
 
-        int filterColIndex = filterType switch
-        {
-            "Region" => 1,
-            "Brand" => 2,
-            "Color" => 3,
-            _ => -1
-        };
-
-        for (int i = 0; i < data.Length; i++)
+        for (int i = 0; i < filteredData.Count; i++)
         {
 
-            if (filterType != String.Empty && data[i][filterColIndex] != filterString)
-                continue;
             dataGridViewMain_GAE.Rows.Add();
-            for (int j = 0; j < data[i].Length; j++)
+            for (int j = 0; j < filteredData[i].Length; j++)
             {
-                dataGridViewMain_GAE.Rows[i].Cells[j].Value = data[i][j];
-            }
+                dataGridViewMain_GAE.Rows[i].Cells[j].Value = filteredData[i][j];
+            }      
         }
 
         dataGridViewMain_GAE.Sort(dataGridViewMain_GAE.Columns["Number"], ListSortDirection.Ascending);
@@ -92,7 +87,7 @@ public partial class FormMain : Form
             errorText = "Невозможно добавить запись, так как не выбрана марка.";
         else if (formAddRecord.comboBoxColor_GAE.Text == "")
             errorText = "Невозможно добавить запись, так как не выбран цвет.";
-            return errorText;
+        return errorText;
     }
     private string GetCsvLineFromFormAddRecord(FormAddRecord formAddRecord)
     {
@@ -132,7 +127,7 @@ public partial class FormMain : Form
         FormAddRecord formAddRecord = new();
         if (formAddRecord.ShowDialog() == DialogResult.OK)
         {
-            if (DataService.IsCarNumberPresentInCsv(filePath, formAddRecord.textBoxNumber_GAE.Text) 
+            if (DataService.IsCarNumberPresentInCsv(filePath, formAddRecord.textBoxNumber_GAE.Text)
                 && formAddRecord.textBoxNumber_GAE.Text != String.Empty)
             {
                 MessageBox.Show("Невозможно добавить запись, так как запись с таким автомобильным номером уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -186,10 +181,10 @@ public partial class FormMain : Form
 
         if (formEditRecord.ShowDialog() == DialogResult.OK)
         {
-           
+
 
             // Проверка на изменение автомобильного номера на уже существующий
-            if (DataService.IsCarNumberPresentInCsv(filePath, formEditRecord.textBoxNumber_GAE.Text) 
+            if (DataService.IsCarNumberPresentInCsv(filePath, formEditRecord.textBoxNumber_GAE.Text)
                 && dataGridViewMain_GAE.SelectedRows[0].Cells[0].Value.ToString() != formEditRecord.textBoxNumber_GAE.Text
                 && formEditRecord.textBoxNumber_GAE.Text != String.Empty)
             {
@@ -211,4 +206,39 @@ public partial class FormMain : Form
     }
 
     private void buttonHelp_GAE_Click(object sender, EventArgs e) => new FormAbout().ShowDialog();
+
+    private void buttonFilter_GAE_Click(object sender, EventArgs e)
+    {
+        FormFilter formFilter = new();
+
+        for (int i = 0; i < formFilter.checkedListBoxBrand_GAE.Items.Count; i++)
+        {
+            if (filterBrand.Contains(formFilter.checkedListBoxBrand_GAE.Items[i].ToString()))
+                formFilter.checkedListBoxBrand_GAE.SetItemChecked(i, true);
+        }
+        for (int i = 0; i < formFilter.checkedListBoxColor_GAE.Items.Count; i++)
+        {
+            if (filterColor.Contains(formFilter.checkedListBoxColor_GAE.Items[i].ToString()))
+                formFilter.checkedListBoxColor_GAE.SetItemChecked(i, true);
+        }
+        for (int i = 0; i < formFilter.checkedListBoxRegion_GAE.Items.Count; i++)
+        {
+            if (filterRegion.Contains(formFilter.checkedListBoxRegion_GAE.Items[i].ToString()))
+                formFilter.checkedListBoxRegion_GAE.SetItemChecked(i, true);
+        }
+
+        if (formFilter.ShowDialog() == DialogResult.OK)
+        {
+            filterRegion.Clear();
+            filterBrand.Clear();
+            filterColor.Clear();
+            foreach (var i in formFilter.checkedListBoxRegion_GAE.CheckedItems)
+                filterRegion.Add(i.ToString());
+            foreach (var i in formFilter.checkedListBoxBrand_GAE.CheckedItems)
+                filterBrand.Add(i.ToString());
+            foreach (var i in formFilter.checkedListBoxColor_GAE.CheckedItems)
+                filterColor.Add(i.ToString());
+            ReloadTable();
+        }
+    }
 }
