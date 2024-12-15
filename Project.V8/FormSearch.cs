@@ -25,5 +25,6 @@ namespace Project.V8
         }
 
         private void buttonClearSearchString_GAE_Click(object sender, EventArgs e) => textBoxSearchString_GAE.Text = string.Empty;
+
     }
 }
