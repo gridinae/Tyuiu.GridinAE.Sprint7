@@ -23,5 +23,15 @@ namespace Project.V8
         {
 
         }
+
+        private void buttonResetFilter_GAE_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBoxBrand_GAE.Items.Count; i++)
+                checkedListBoxBrand_GAE.SetItemChecked(i, true);
+            for (int i = 0; i < checkedListBoxColor_GAE.Items.Count; i++)
+                checkedListBoxColor_GAE.SetItemChecked(i, true);
+            for (int i = 0; i < checkedListBoxRegion_GAE.Items.Count; i++)
+                checkedListBoxRegion_GAE.SetItemChecked(i, true);
+        }
     }
 }

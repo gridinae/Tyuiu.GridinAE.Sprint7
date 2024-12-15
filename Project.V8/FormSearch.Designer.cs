@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSearch));
             label1 = new Label();
             comboBoxSearchType_GAE = new ComboBox();
@@ -37,6 +38,7 @@
             textBoxSearchString_GAE = new TextBox();
             buttonClearSearchString_GAE = new Button();
             checkBoxExactMatch_GAE = new CheckBox();
+            toolTipSearch_GAE = new ToolTip(components);
             SuspendLayout();
             // 
             // label1
@@ -102,6 +104,7 @@
             buttonClearSearchString_GAE.Name = "buttonClearSearchString_GAE";
             buttonClearSearchString_GAE.Size = new Size(29, 29);
             buttonClearSearchString_GAE.TabIndex = 20;
+            toolTipSearch_GAE.SetToolTip(buttonClearSearchString_GAE, "Очистить строку поиска (Сбросить поиск)");
             buttonClearSearchString_GAE.UseVisualStyleBackColor = true;
             buttonClearSearchString_GAE.Click += buttonClearSearchString_GAE_Click;
             // 
@@ -147,5 +150,6 @@
         public ComboBox comboBoxSearchType_GAE;
         public TextBox textBoxSearchString_GAE;
         public CheckBox checkBoxExactMatch_GAE;
+        private ToolTip toolTipSearch_GAE;
     }
 }
