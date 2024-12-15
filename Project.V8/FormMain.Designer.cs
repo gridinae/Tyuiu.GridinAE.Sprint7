@@ -114,6 +114,7 @@
             buttonSearch_GAE.TabIndex = 3;
             toolTipMain.SetToolTip(buttonSearch_GAE, "Поиск");
             buttonSearch_GAE.UseVisualStyleBackColor = true;
+            buttonSearch_GAE.Click += buttonSearch_GAE_Click;
             // 
             // buttonEdit_GAE
             // 

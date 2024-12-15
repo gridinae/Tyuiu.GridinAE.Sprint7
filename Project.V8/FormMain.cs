@@ -31,16 +31,29 @@ public partial class FormMain : Form
     private List<string> filterRegion = ["Москва", "Тюмень", "Тверь", "Екатеринбург", "Санкт-Петербург", "Новосибирск"];
     private List<string> filterBrand = ["Volvo", "Audi", "Nissan", "BMW", "Mercedes", "Opel", "Lada"];
     private List<string> filterColor = ["Черный", "Белый", "Серый", "Синий", "Фиолетовый", "Красный", "Розовый", "Желтый", "Зеленый", "Коричневый"];
-    
+
+    private string searchType = "По авт. номеру"; // По идее нужно использовать enum
+    private bool searchExactMatch = false;
+    private string searchString = String.Empty;
+
     private void ReloadTable()
     {
         var selectedRows = dataGridViewMain_GAE.SelectedRows;
 
         string[][] data = DataService.ReadCsv(filePath);
         List<string[]> filteredData = new();
+        int index;
         foreach (string[] record in data)
             if (filterRegion.Contains(record[1]) && filterBrand.Contains(record[2]) && filterColor.Contains(record[3]))
-                filteredData.Add(record);
+            {
+                index = searchType switch
+                {
+                    "По авт. номеру" => 0,
+                    "По ФИО" => 4
+                };
+                if (searchString == string.Empty || (searchExactMatch && record[index] == searchString || !searchExactMatch && record[index].Contains(searchString)))
+                    filteredData.Add(record);
+            }
 
         dataGridViewMain_GAE.Rows.Clear();
 
@@ -51,7 +64,7 @@ public partial class FormMain : Form
             for (int j = 0; j < filteredData[i].Length; j++)
             {
                 dataGridViewMain_GAE.Rows[i].Cells[j].Value = filteredData[i][j];
-            }      
+            }
         }
 
         dataGridViewMain_GAE.Sort(dataGridViewMain_GAE.Columns["Number"], ListSortDirection.Ascending);
@@ -238,6 +251,21 @@ public partial class FormMain : Form
                 filterBrand.Add(i.ToString());
             foreach (var i in formFilter.checkedListBoxColor_GAE.CheckedItems)
                 filterColor.Add(i.ToString());
+            ReloadTable();
+        }
+    }
+
+    private void buttonSearch_GAE_Click(object sender, EventArgs e)
+    {
+        FormSearch formSearch = new();
+        formSearch.comboBoxSearchType_GAE.Text = searchType;
+        formSearch.textBoxSearchString_GAE.Text = searchString;
+        formSearch.checkBoxExactMatch_GAE.Checked = searchExactMatch;
+        if (formSearch.ShowDialog() == DialogResult.OK)
+        {
+            searchType = formSearch.comboBoxSearchType_GAE.Text;
+            searchString = formSearch.textBoxSearchString_GAE.Text;
+            searchExactMatch = formSearch.checkBoxExactMatch_GAE.Checked;
             ReloadTable();
         }
     }
