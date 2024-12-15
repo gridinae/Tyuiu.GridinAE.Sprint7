@@ -94,9 +94,9 @@
             labelPhoneNumber_GAE.AutoSize = true;
             labelPhoneNumber_GAE.Location = new Point(12, 197);
             labelPhoneNumber_GAE.Name = "labelPhoneNumber_GAE";
-            labelPhoneNumber_GAE.Size = new Size(141, 20);
+            labelPhoneNumber_GAE.Size = new Size(167, 20);
             labelPhoneNumber_GAE.TabIndex = 6;
-            labelPhoneNumber_GAE.Text = "Телефон Водителя:";
+            labelPhoneNumber_GAE.Text = "Телефон Водителя:  +7";
             // 
             // textBoxNumber_GAE
             // 
@@ -144,10 +144,11 @@
             // 
             // textBoxDriverPhone_GAE
             // 
-            textBoxDriverPhone_GAE.Location = new Point(159, 194);
+            textBoxDriverPhone_GAE.Location = new Point(177, 194);
             textBoxDriverPhone_GAE.Name = "textBoxDriverPhone_GAE";
-            textBoxDriverPhone_GAE.Size = new Size(174, 27);
+            textBoxDriverPhone_GAE.Size = new Size(156, 27);
             textBoxDriverPhone_GAE.TabIndex = 12;
+            textBoxDriverPhone_GAE.KeyPress += textBoxDriverPhone_GAE_KeyPress;
             // 
             // buttonOK_GAE
             // 

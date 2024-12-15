@@ -12,34 +12,23 @@ public partial class FormMain : Form
         InitializeComponent();
     }
 
-    private int _itemCount;
+    private int itemCount;
     private int ItemCount
     {
-        get { return _itemCount; }
+        get { return itemCount; }
         set
         {
-            _itemCount = value;
-            toolStripStatusLabelItemCount.Text = "Число записей: " + _itemCount.ToString();
+            itemCount = value;
+            toolStripStatusLabelItemCount.Text = "Число записей: " + itemCount.ToString();
         }
     }
     private void dataGridViewMain_GAE_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e) => ItemCount += e.RowCount;
     private void dataGridViewMain_GAE_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) => ItemCount -= e.RowCount;
 
-    private string filePath = AppDomain.CurrentDomain.BaseDirectory + @"\Data.csv";
+    private readonly string filePath = AppDomain.CurrentDomain.BaseDirectory + @"\Data.csv";
 
-    private enum SearchOrFilterType
-    {
-        ByAutoNumber,
-        ByRegion,
-        ByBrand,
-        ByColor,
-        ByDriverName,
-        ByDriverPhoneNumber,
-        None
-    }
-
-    private SearchOrFilterType searchOrFilterType = SearchOrFilterType.None;
-    private string searchOrFilterString = "";
+    private string filterType = "";
+    private string filterString = "";
 
 
     private void ReloadTable()
@@ -50,10 +39,18 @@ public partial class FormMain : Form
 
         dataGridViewMain_GAE.Rows.Clear();
 
+        int filterColIndex = filterType switch
+        {
+            "Region" => 1,
+            "Brand" => 2,
+            "Color" => 3,
+            _ => -1
+        };
+
         for (int i = 0; i < data.Length; i++)
         {
 
-            if (searchOrFilterType != SearchOrFilterType.None && data[i][(int)searchOrFilterType] != searchOrFilterString)
+            if (filterType != String.Empty && data[i][filterColIndex] != filterString)
                 continue;
             dataGridViewMain_GAE.Rows.Add();
             for (int j = 0; j < data[i].Length; j++)
@@ -76,43 +73,80 @@ public partial class FormMain : Form
     }
 
 
-
-    //TODO: Переписать три функции ниже (вынести функционал в отдельные методы)
+    private string CheckValidityOfFormAddRecord(FormAddRecord formAddRecord)
+    {
+        string errorText = "";
+        if (formAddRecord.textBoxNumber_GAE.Text.Contains(','))
+            errorText = "Невозможно добавить запись. Поле \"Автомобильный номер\" содержит запрещенный символ \",\".";
+        else if (formAddRecord.textBoxDriverName_GAE.Text.Contains(','))
+            errorText = "Невозможно добавить запись. Поле \"ФИО Водителя\" содержит запрещенный символ \",\".";
+        else if (formAddRecord.textBoxNumber_GAE.Text == "")
+            errorText = "Невозможно добавить запись. Поле \"Автомобильный номер\" не заполнено.";
+        else if (formAddRecord.textBoxDriverName_GAE.Text == "")
+            errorText = "Невозможно добавить запись. Поле \"ФИО Водителя\" не заполнено.";
+        else if (formAddRecord.textBoxDriverPhone_GAE.Text == "")
+            errorText = "Невозможно добавить запись. Поле \"Телефон Водителя\" не заполнено.";
+        else if (formAddRecord.comboBoxRegion_GAE.Text == "")
+            errorText = "Невозможно добавить запись, так как не выбран регион.";
+        else if (formAddRecord.comboBoxBrand_GAE.Text == "")
+            errorText = "Невозможно добавить запись, так как не выбрана марка.";
+        else if (formAddRecord.comboBoxColor_GAE.Text == "")
+            errorText = "Невозможно добавить запись, так как не выбран цвет.";
+            return errorText;
+    }
+    private string GetCsvLineFromFormAddRecord(FormAddRecord formAddRecord)
+    {
+        string line = "";
+        line += formAddRecord.textBoxNumber_GAE.Text;
+        line += "," + formAddRecord.comboBoxRegion_GAE.Text;
+        line += "," + formAddRecord.comboBoxBrand_GAE.Text;
+        line += "," + formAddRecord.comboBoxColor_GAE.Text;
+        line += "," + formAddRecord.textBoxDriverName_GAE.Text;
+        line += ",+7" + formAddRecord.textBoxDriverPhone_GAE.Text;
+        return line;
+    }
+    private string GetCsvLineFromFirstSelectedRow()
+    {
+        string line = "";
+        line += dataGridViewMain_GAE.SelectedRows[0].Cells[0].Value;
+        line += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[1].Value;
+        line += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[2].Value;
+        line += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[3].Value;
+        line += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[4].Value;
+        line += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[5].Value;
+        return line;
+    }
+    private void SetFormAddRecordFieldsWithFirstSelectedRowValues(FormAddRecord formAddRecord)
+    {
+        formAddRecord.textBoxNumber_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[0].Value.ToString();
+        formAddRecord.comboBoxRegion_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[1].Value.ToString();
+        formAddRecord.comboBoxBrand_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[2].Value.ToString();
+        formAddRecord.comboBoxColor_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[3].Value.ToString();
+        formAddRecord.textBoxDriverName_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[4].Value.ToString();
+        formAddRecord.textBoxDriverPhone_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[5].Value.ToString();
+    }
 
     private void buttonAdd_GAE_Click(object sender, EventArgs e)
     {
-        string line = "";
+
         FormAddRecord formAddRecord = new();
         if (formAddRecord.ShowDialog() == DialogResult.OK)
         {
-            if ((formAddRecord.textBoxNumber_GAE.Text +
-                formAddRecord.textBoxDriverName_GAE.Text +
-                formAddRecord.textBoxDriverPhone_GAE.Text).Contains(',')
-                || formAddRecord.textBoxNumber_GAE.Text == ""
-                || formAddRecord.textBoxDriverName_GAE.Text == ""
-                || formAddRecord.textBoxDriverPhone_GAE.Text == ""
-                || formAddRecord.comboBoxRegion_GAE.Text == ""
-                || formAddRecord.comboBoxBrand_GAE.Text == ""
-                || formAddRecord.comboBoxColor_GAE.Text == "")
-            {
-                MessageBox.Show("Невозможно добавить запись. Проверьте правильность заполненных полей.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (DataService.IsCarNumberPresentInCsv(filePath, formAddRecord.textBoxNumber_GAE.Text))
+            if (DataService.IsCarNumberPresentInCsv(filePath, formAddRecord.textBoxNumber_GAE.Text) 
+                && formAddRecord.textBoxNumber_GAE.Text != String.Empty)
             {
                 MessageBox.Show("Невозможно добавить запись, так как запись с таким автомобильным номером уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            line += formAddRecord.textBoxNumber_GAE.Text;
-            line += "," + formAddRecord.comboBoxRegion_GAE.Text;
-            line += "," + formAddRecord.comboBoxBrand_GAE.Text;
-            line += "," + formAddRecord.comboBoxColor_GAE.Text;
-            line += "," + formAddRecord.textBoxDriverName_GAE.Text;
-            line += "," + formAddRecord.textBoxDriverPhone_GAE.Text;
+            string validityResult = CheckValidityOfFormAddRecord(formAddRecord);
+            if (validityResult != "")
+            {
+                MessageBox.Show(validityResult, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            DataService.AppendCsv(filePath, line);
+            DataService.AppendCsv(filePath, GetCsvLineFromFormAddRecord(formAddRecord));
             ReloadTable();
         }
 
@@ -120,6 +154,8 @@ public partial class FormMain : Form
 
     private void buttonRemove_GAE_Click(object sender, EventArgs e)
     {
+        if (dataGridViewMain_GAE.SelectedRows.Count == 0)
+            return;
         var msgBoxResult = MessageBox.Show("Удалить выделенные записи? Это действие нельзя отменить.", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         if (msgBoxResult == DialogResult.Yes)
         {
@@ -143,55 +179,33 @@ public partial class FormMain : Form
     {
         if (dataGridViewMain_GAE.SelectedRows.Count == 0)
             return;
-        string line = "";
         FormAddRecord formEditRecord = new();
         formEditRecord.Text = "Редактировать запись";
-        formEditRecord.textBoxNumber_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[0].Value.ToString();
-        formEditRecord.comboBoxRegion_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[1].Value.ToString();
-        formEditRecord.comboBoxBrand_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[2].Value.ToString();
-        formEditRecord.comboBoxColor_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[3].Value.ToString();
-        formEditRecord.textBoxDriverName_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[4].Value.ToString();
-        formEditRecord.textBoxDriverPhone_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[5].Value.ToString();
+
+        SetFormAddRecordFieldsWithFirstSelectedRowValues(formEditRecord);
 
         if (formEditRecord.ShowDialog() == DialogResult.OK)
         {
-            if ((formEditRecord.textBoxNumber_GAE.Text +
-                formEditRecord.textBoxDriverName_GAE.Text +
-                formEditRecord.textBoxDriverPhone_GAE.Text).Contains(',')
-                || formEditRecord.textBoxNumber_GAE.Text == ""
-                || formEditRecord.textBoxDriverName_GAE.Text == ""
-                || formEditRecord.textBoxDriverPhone_GAE.Text == ""
-                || formEditRecord.comboBoxRegion_GAE.Text == ""
-                || formEditRecord.comboBoxBrand_GAE.Text == ""
-                || formEditRecord.comboBoxColor_GAE.Text == "")
-            {
-                MessageBox.Show("Невозможно добавить запись. Проверьте правильность заполненных полей.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+           
 
             // Проверка на изменение автомобильного номера на уже существующий
-            if (DataService.IsCarNumberPresentInCsv(filePath, formEditRecord.textBoxNumber_GAE.Text) && dataGridViewMain_GAE.SelectedRows[0].Cells[0].Value.ToString() != formEditRecord.textBoxNumber_GAE.Text)
+            if (DataService.IsCarNumberPresentInCsv(filePath, formEditRecord.textBoxNumber_GAE.Text) 
+                && dataGridViewMain_GAE.SelectedRows[0].Cells[0].Value.ToString() != formEditRecord.textBoxNumber_GAE.Text
+                && formEditRecord.textBoxNumber_GAE.Text != String.Empty)
             {
                 MessageBox.Show("Невозможно редактировать запись, так как запись с таким автомобильным номером уже существует.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            line += formEditRecord.textBoxNumber_GAE.Text;
-            line += "," + formEditRecord.comboBoxRegion_GAE.Text;
-            line += "," + formEditRecord.comboBoxBrand_GAE.Text;
-            line += "," + formEditRecord.comboBoxColor_GAE.Text;
-            line += "," + formEditRecord.textBoxDriverName_GAE.Text;
-            line += "," + formEditRecord.textBoxDriverPhone_GAE.Text;
+            string validityResult = CheckValidityOfFormAddRecord(formEditRecord);
+            if (validityResult != "")
+            {
+                MessageBox.Show(validityResult, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            string line2 = "";
-            line2 += dataGridViewMain_GAE.SelectedRows[0].Cells[0].Value;
-            line2 += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[1].Value;
-            line2 += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[2].Value;
-            line2 += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[3].Value;
-            line2 += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[4].Value;
-            line2 += "," + dataGridViewMain_GAE.SelectedRows[0].Cells[5].Value;
-            DataService.DeleteLineInCsv(filePath, line2);
-            DataService.AppendCsv(filePath, line);
+            DataService.AppendCsv(filePath, GetCsvLineFromFormAddRecord(formEditRecord));
+            DataService.DeleteLineInCsv(filePath, GetCsvLineFromFirstSelectedRow());
             ReloadTable();
         }
     }
