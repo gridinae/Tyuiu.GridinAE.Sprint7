@@ -31,6 +31,7 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             panelMainButtons_GAE = new Panel();
+            buttonSettings_GAE = new Button();
             buttonHelp_GAE = new Button();
             buttonStats_GAE = new Button();
             buttonFilter_GAE = new Button();
@@ -51,7 +52,6 @@
             contextMenuStripHelp_GAE = new ContextMenuStrip(components);
             toolStripMenuHelpManual = new ToolStripMenuItem();
             toolStripMenuHelpAbout = new ToolStripMenuItem();
-            buttonSettings_GAE = new Button();
             panelMainButtons_GAE.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewMain_GAE).BeginInit();
             statusStripMain_GAE.SuspendLayout();
@@ -73,6 +73,19 @@
             panelMainButtons_GAE.Name = "panelMainButtons_GAE";
             panelMainButtons_GAE.Size = new Size(782, 61);
             panelMainButtons_GAE.TabIndex = 1;
+            // 
+            // buttonSettings_GAE
+            // 
+            buttonSettings_GAE.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            buttonSettings_GAE.FlatStyle = FlatStyle.Flat;
+            buttonSettings_GAE.Image = (Image)resources.GetObject("buttonSettings_GAE.Image");
+            buttonSettings_GAE.Location = new Point(661, 3);
+            buttonSettings_GAE.Name = "buttonSettings_GAE";
+            buttonSettings_GAE.Size = new Size(56, 55);
+            buttonSettings_GAE.TabIndex = 8;
+            toolTipMain_GAE.SetToolTip(buttonSettings_GAE, "Статистика");
+            buttonSettings_GAE.UseVisualStyleBackColor = true;
+            buttonSettings_GAE.Click += buttonSettings_GAE_Click;
             // 
             // buttonHelp_GAE
             // 
@@ -262,17 +275,6 @@
             toolStripMenuHelpAbout.Size = new Size(173, 24);
             toolStripMenuHelpAbout.Text = "О программе";
             toolStripMenuHelpAbout.Click += toolStripMenuHelpAbout_Click;
-            // 
-            // buttonSettings_GAE
-            // 
-            buttonSettings_GAE.FlatStyle = FlatStyle.Flat;
-            buttonSettings_GAE.Image = (Image)resources.GetObject("buttonSettings_GAE.Image");
-            buttonSettings_GAE.Location = new Point(661, 3);
-            buttonSettings_GAE.Name = "buttonSettings_GAE";
-            buttonSettings_GAE.Size = new Size(56, 55);
-            buttonSettings_GAE.TabIndex = 8;
-            toolTipMain_GAE.SetToolTip(buttonSettings_GAE, "Статистика");
-            buttonSettings_GAE.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 

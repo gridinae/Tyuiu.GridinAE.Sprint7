@@ -87,11 +87,22 @@ public partial class FormMain : Form
                 row.Selected = true;
         }
     }
+    private void ReloadCellStyleSettings()
+    {
+        CellStyleSettings cellStyleSettings = new();
+        cellStyleSettings.Read();
+
+        dataGridViewMain_GAE.DefaultCellStyle.Font = cellStyleSettings.Font;
+        dataGridViewMain_GAE.DefaultCellStyle.SelectionForeColor = cellStyleSettings.SelectionForeColor;
+        dataGridViewMain_GAE.DefaultCellStyle.SelectionBackColor = cellStyleSettings.SelectionBackColor;
+
+    }
 
     private void FormMain_Load(object sender, EventArgs e)
     {
         ReloadCsv();
         ReloadTable();
+        ReloadCellStyleSettings();
     }
 
 
@@ -387,5 +398,30 @@ public partial class FormMain : Form
     private void toolStripMenuHelpAbout_Click(object sender, EventArgs e)
     {
         new FormAbout().ShowDialog();
+    }
+
+    private void buttonSettings_GAE_Click(object sender, EventArgs e)
+    {
+        FormSettings formSettings = new();
+
+        formSettings.Font = dataGridViewMain_GAE.DefaultCellStyle.Font;
+        formSettings.labelFont_GAE.Text = "Øðèôò: " + dataGridViewMain_GAE.DefaultCellStyle.Font.Name +
+                                     ", " + dataGridViewMain_GAE.DefaultCellStyle.Font.SizeInPoints.ToString() + " ïò.";
+        if (dataGridViewMain_GAE.DefaultCellStyle.Font.Style != FontStyle.Regular)
+            formSettings.labelFont_GAE.Text += $", {dataGridViewMain_GAE.DefaultCellStyle.Font.Style}";
+
+        formSettings.panelSelectionBgColor_GAE.BackColor = dataGridViewMain_GAE.DefaultCellStyle.SelectionBackColor;
+        formSettings.panelSelectionFgColor_GAE.BackColor = dataGridViewMain_GAE.DefaultCellStyle.SelectionForeColor;
+
+        if (formSettings.ShowDialog() == DialogResult.OK)
+        {
+            dataGridViewMain_GAE.DefaultCellStyle.Font = formSettings.Font;
+            dataGridViewMain_GAE.DefaultCellStyle.SelectionForeColor = formSettings.panelSelectionFgColor_GAE.BackColor;
+            dataGridViewMain_GAE.DefaultCellStyle.SelectionBackColor = formSettings.panelSelectionBgColor_GAE.BackColor;
+
+            new CellStyleSettings(formSettings.Font, formSettings.panelSelectionFgColor_GAE.BackColor, formSettings.panelSelectionBgColor_GAE.BackColor).Write();
+        }
+
+        
     }
 }
