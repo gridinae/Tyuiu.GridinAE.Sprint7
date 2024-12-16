@@ -157,7 +157,7 @@
             buttonOK_GAE.Name = "buttonOK_GAE";
             buttonOK_GAE.Size = new Size(94, 29);
             buttonOK_GAE.TabIndex = 13;
-            buttonOK_GAE.Text = "OK";
+            buttonOK_GAE.Text = "Добавить";
             buttonOK_GAE.UseVisualStyleBackColor = true;
             buttonOK_GAE.Click += buttonOK_GAE_Click;
             // 
@@ -207,7 +207,6 @@
         private Label labelColor_GAE;
         private Label labelDriverName_GAE;
         private Label labelPhoneNumber_GAE;
-        private Button buttonOK_GAE;
         private Button buttonCancel_GAE;
         public TextBox textBoxNumber_GAE;
         public ComboBox comboBoxRegion_GAE;
@@ -215,5 +214,6 @@
         public ComboBox comboBoxColor_GAE;
         public TextBox textBoxDriverName_GAE;
         public TextBox textBoxDriverPhone_GAE;
+        public Button buttonOK_GAE;
     }
 }

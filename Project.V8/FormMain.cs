@@ -1,5 +1,6 @@
 using Project.V8.Lib;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -36,14 +37,26 @@ public partial class FormMain : Form
     private bool searchExactMatch = false;
     private string searchString = String.Empty;
 
+    private string[][] csv = [];
+    private List<string[]> filteredData = [];
+
+    private void ReloadCsv()
+    {
+        if (!File.Exists(filePath))
+        {
+            csv = [];
+            MessageBox.Show($"Ошибка при чтении файла данных: файл {filePath} не найден.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+        csv = DataService.ReadCsv(filePath);
+    }
     private void ReloadTable()
     {
         var selectedRows = dataGridViewMain_GAE.SelectedRows;
 
-        string[][] data = DataService.ReadCsv(filePath);
-        List<string[]> filteredData = new();
+        filteredData.Clear();
         int index;
-        foreach (string[] record in data)
+        foreach (string[] record in csv)
             if (filterRegion.Contains(record[1]) && filterBrand.Contains(record[2]) && filterColor.Contains(record[3]))
             {
                 index = searchType switch
@@ -77,6 +90,7 @@ public partial class FormMain : Form
 
     private void FormMain_Load(object sender, EventArgs e)
     {
+        ReloadCsv();
         ReloadTable();
     }
 
@@ -131,7 +145,7 @@ public partial class FormMain : Form
         formAddRecord.comboBoxBrand_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[2].Value.ToString();
         formAddRecord.comboBoxColor_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[3].Value.ToString();
         formAddRecord.textBoxDriverName_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[4].Value.ToString();
-        formAddRecord.textBoxDriverPhone_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[5].Value.ToString();
+        formAddRecord.textBoxDriverPhone_GAE.Text = dataGridViewMain_GAE.SelectedRows[0].Cells[5].Value.ToString()[2..];
     }
 
     private void buttonAdd_GAE_Click(object sender, EventArgs e)
@@ -155,6 +169,7 @@ public partial class FormMain : Form
             }
 
             DataService.AppendCsv(filePath, GetCsvLineFromFormAddRecord(formAddRecord));
+            ReloadCsv();
             ReloadTable();
         }
 
@@ -178,6 +193,7 @@ public partial class FormMain : Form
                 line += "," + dataGridViewMain_GAE.SelectedRows[i].Cells[5].Value;
                 DataService.DeleteLineInCsv(filePath, line);
             }
+            ReloadCsv();
             ReloadTable();
         }
 
@@ -189,6 +205,7 @@ public partial class FormMain : Form
             return;
         FormAddRecord formEditRecord = new();
         formEditRecord.Text = "Редактировать запись";
+        formEditRecord.buttonOK_GAE.Text = "ОК";
 
         SetFormAddRecordFieldsWithFirstSelectedRowValues(formEditRecord);
 
@@ -212,13 +229,16 @@ public partial class FormMain : Form
                 return;
             }
 
-            DataService.AppendCsv(filePath, GetCsvLineFromFormAddRecord(formEditRecord));
             DataService.DeleteLineInCsv(filePath, GetCsvLineFromFirstSelectedRow());
+            DataService.AppendCsv(filePath, GetCsvLineFromFormAddRecord(formEditRecord));
+
+
+            ReloadCsv();
             ReloadTable();
         }
     }
 
-    private void buttonHelp_GAE_Click(object sender, EventArgs e) => new FormAbout().ShowDialog();
+    private void buttonHelp_GAE_Click(object sender, EventArgs e) => contextMenuStripHelp_GAE.Show(Cursor.Position);
 
     private void buttonFilter_GAE_Click(object sender, EventArgs e)
     {
@@ -268,5 +288,88 @@ public partial class FormMain : Form
             searchExactMatch = formSearch.checkBoxExactMatch_GAE.Checked;
             ReloadTable();
         }
+    }
+
+    private void buttonStats_GAE_Click(object sender, EventArgs e)
+    {
+        if (dataGridViewMain_GAE.RowCount == 0)
+        {
+            MessageBox.Show("Невозможно показать статистику, так как в таблице отсутствуют записи.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        FormStats formStats = new();
+
+        int count;
+        foreach (var s in new string[] { "Москва", "Тюмень", "Тверь", "Екатеринбург", "Санкт-Петербург", "Новосибирск" })
+        {
+            count = 0;
+            for (int i = 0; i < dataGridViewMain_GAE.RowCount; i++)
+            {
+                if (dataGridViewMain_GAE.Rows[i].Cells[1].Value.ToString() == s)
+                    count++;
+            }
+            if (count != 0)
+                formStats.chartRegion_GAE.Series.First().Points.Add(new System.Windows.Forms.DataVisualization.Charting.DataPoint { YValues = [count], LegendText = s });
+        }
+
+        foreach (var s in new string[] { "Volvo", "Audi", "Nissan", "BMW", "Mercedes", "Opel", "Lada" })
+        {
+            count = 0;
+            for (int i = 0; i < dataGridViewMain_GAE.RowCount; i++)
+            {
+                if (dataGridViewMain_GAE.Rows[i].Cells[2].Value.ToString() == s)
+                    count++;
+            }
+            if (count != 0)
+                formStats.chartBrand_GAE.Series.First().Points.Add(new System.Windows.Forms.DataVisualization.Charting.DataPoint { YValues = [count], LegendText = s });
+        }
+
+        foreach (var s in new string[] { "Черный", "Белый", "Серый", "Синий", "Фиолетовый", "Красный", "Розовый", "Желтый", "Зеленый", "Коричневый" })
+        {
+            count = 0;
+            for (int i = 0; i < dataGridViewMain_GAE.RowCount; i++)
+            {
+                if (dataGridViewMain_GAE.Rows[i].Cells[3].Value.ToString() == s)
+                    count++;
+            }
+
+            Color color = s switch
+            {
+                "Черный" => ColorTranslator.FromHtml("#000000"),
+                "Белый" => ColorTranslator.FromHtml("#efefef"),
+                "Серый" => ColorTranslator.FromHtml("#9e9e9e"),
+                "Синий" => ColorTranslator.FromHtml("#322fd9"),
+                "Фиолетовый" => ColorTranslator.FromHtml("#b428d8"),
+                "Красный" => ColorTranslator.FromHtml("#d93252"),
+                "Розовый" => ColorTranslator.FromHtml("#e369c5"),
+                "Желтый" => ColorTranslator.FromHtml("#e6e477"),
+                "Зеленый" => ColorTranslator.FromHtml("#69e15d"),
+                "Коричневый" => ColorTranslator.FromHtml("#918151")
+
+            };
+
+            if (count != 0)
+                formStats.chartColor_GAE.Series.First().Points.Add(new System.Windows.Forms.DataVisualization.Charting.DataPoint { YValues = [count], LegendText = s, Color = color });
+        }
+
+
+        formStats.ShowDialog();
+    }
+
+    private void toolStripMenuHelpManual_Click(object sender, EventArgs e)
+    {
+        new Process
+        {
+            StartInfo = new ProcessStartInfo(AppDomain.CurrentDomain.BaseDirectory + @"\Manual.rtf")
+            {
+                UseShellExecute = true
+            }
+        }.Start();
+    }
+
+    private void toolStripMenuHelpAbout_Click(object sender, EventArgs e)
+    {
+        new FormAbout().ShowDialog();
     }
 }

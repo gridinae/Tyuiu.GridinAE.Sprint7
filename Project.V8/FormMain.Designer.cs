@@ -45,12 +45,16 @@
             Color = new DataGridViewTextBoxColumn();
             DriverName = new DataGridViewTextBoxColumn();
             DriverPhoneNumber = new DataGridViewTextBoxColumn();
-            toolTipMain = new ToolTip(components);
-            statusStrip1 = new StatusStrip();
+            toolTipMain_GAE = new ToolTip(components);
+            statusStripMain_GAE = new StatusStrip();
             toolStripStatusLabelItemCount = new ToolStripStatusLabel();
+            contextMenuStripHelp_GAE = new ContextMenuStrip(components);
+            toolStripMenuHelpManual = new ToolStripMenuItem();
+            toolStripMenuHelpAbout = new ToolStripMenuItem();
             panelMainButtons_GAE.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewMain_GAE).BeginInit();
-            statusStrip1.SuspendLayout();
+            statusStripMain_GAE.SuspendLayout();
+            contextMenuStripHelp_GAE.SuspendLayout();
             SuspendLayout();
             // 
             // panelMainButtons_GAE
@@ -77,7 +81,7 @@
             buttonHelp_GAE.Name = "buttonHelp_GAE";
             buttonHelp_GAE.Size = new Size(56, 55);
             buttonHelp_GAE.TabIndex = 7;
-            toolTipMain.SetToolTip(buttonHelp_GAE, "Помощь");
+            toolTipMain_GAE.SetToolTip(buttonHelp_GAE, "Помощь");
             buttonHelp_GAE.UseVisualStyleBackColor = true;
             buttonHelp_GAE.Click += buttonHelp_GAE_Click;
             // 
@@ -89,8 +93,9 @@
             buttonStats_GAE.Name = "buttonStats_GAE";
             buttonStats_GAE.Size = new Size(56, 55);
             buttonStats_GAE.TabIndex = 6;
-            toolTipMain.SetToolTip(buttonStats_GAE, "Статистика");
+            toolTipMain_GAE.SetToolTip(buttonStats_GAE, "Статистика");
             buttonStats_GAE.UseVisualStyleBackColor = true;
+            buttonStats_GAE.Click += buttonStats_GAE_Click;
             // 
             // buttonFilter_GAE
             // 
@@ -100,7 +105,7 @@
             buttonFilter_GAE.Name = "buttonFilter_GAE";
             buttonFilter_GAE.Size = new Size(56, 55);
             buttonFilter_GAE.TabIndex = 5;
-            toolTipMain.SetToolTip(buttonFilter_GAE, "Фильтрация");
+            toolTipMain_GAE.SetToolTip(buttonFilter_GAE, "Фильтрация");
             buttonFilter_GAE.UseVisualStyleBackColor = true;
             buttonFilter_GAE.Click += buttonFilter_GAE_Click;
             // 
@@ -112,7 +117,7 @@
             buttonSearch_GAE.Name = "buttonSearch_GAE";
             buttonSearch_GAE.Size = new Size(56, 55);
             buttonSearch_GAE.TabIndex = 3;
-            toolTipMain.SetToolTip(buttonSearch_GAE, "Поиск");
+            toolTipMain_GAE.SetToolTip(buttonSearch_GAE, "Поиск");
             buttonSearch_GAE.UseVisualStyleBackColor = true;
             buttonSearch_GAE.Click += buttonSearch_GAE_Click;
             // 
@@ -124,7 +129,7 @@
             buttonEdit_GAE.Name = "buttonEdit_GAE";
             buttonEdit_GAE.Size = new Size(56, 55);
             buttonEdit_GAE.TabIndex = 2;
-            toolTipMain.SetToolTip(buttonEdit_GAE, "Редактировать запись");
+            toolTipMain_GAE.SetToolTip(buttonEdit_GAE, "Редактировать запись");
             buttonEdit_GAE.UseVisualStyleBackColor = true;
             buttonEdit_GAE.Click += buttonEdit_GAE_Click;
             // 
@@ -136,7 +141,7 @@
             buttonRemove_GAE.Name = "buttonRemove_GAE";
             buttonRemove_GAE.Size = new Size(56, 55);
             buttonRemove_GAE.TabIndex = 1;
-            toolTipMain.SetToolTip(buttonRemove_GAE, "Удалить записи");
+            toolTipMain_GAE.SetToolTip(buttonRemove_GAE, "Удалить записи");
             buttonRemove_GAE.UseVisualStyleBackColor = true;
             buttonRemove_GAE.Click += buttonRemove_GAE_Click;
             // 
@@ -148,7 +153,7 @@
             buttonAdd_GAE.Name = "buttonAdd_GAE";
             buttonAdd_GAE.Size = new Size(56, 55);
             buttonAdd_GAE.TabIndex = 0;
-            toolTipMain.SetToolTip(buttonAdd_GAE, "Добавить запись");
+            toolTipMain_GAE.SetToolTip(buttonAdd_GAE, "Добавить запись");
             buttonAdd_GAE.UseVisualStyleBackColor = true;
             buttonAdd_GAE.Click += buttonAdd_GAE_Click;
             // 
@@ -215,15 +220,15 @@
             DriverPhoneNumber.Name = "DriverPhoneNumber";
             DriverPhoneNumber.ReadOnly = true;
             // 
-            // statusStrip1
+            // statusStripMain_GAE
             // 
-            statusStrip1.ImageScalingSize = new Size(20, 20);
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabelItemCount });
-            statusStrip1.Location = new Point(0, 327);
-            statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(782, 26);
-            statusStrip1.TabIndex = 2;
-            statusStrip1.Text = "statusStrip1";
+            statusStripMain_GAE.ImageScalingSize = new Size(20, 20);
+            statusStripMain_GAE.Items.AddRange(new ToolStripItem[] { toolStripStatusLabelItemCount });
+            statusStripMain_GAE.Location = new Point(0, 327);
+            statusStripMain_GAE.Name = "statusStripMain_GAE";
+            statusStripMain_GAE.Size = new Size(782, 26);
+            statusStripMain_GAE.TabIndex = 2;
+            statusStripMain_GAE.Text = "statusStrip1";
             // 
             // toolStripStatusLabelItemCount
             // 
@@ -231,12 +236,37 @@
             toolStripStatusLabelItemCount.Size = new Size(128, 20);
             toolStripStatusLabelItemCount.Text = "Число записей: 0";
             // 
+            // contextMenuStripHelp_GAE
+            // 
+            contextMenuStripHelp_GAE.ImageScalingSize = new Size(0, 0);
+            contextMenuStripHelp_GAE.Items.AddRange(new ToolStripItem[] { toolStripMenuHelpManual, toolStripMenuHelpAbout });
+            contextMenuStripHelp_GAE.Name = "contextMenuStripHelp_GAE";
+            contextMenuStripHelp_GAE.RenderMode = ToolStripRenderMode.System;
+            contextMenuStripHelp_GAE.Size = new Size(174, 52);
+            // 
+            // toolStripMenuHelpManual
+            // 
+            toolStripMenuHelpManual.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripMenuHelpManual.Name = "toolStripMenuHelpManual";
+            toolStripMenuHelpManual.Size = new Size(173, 24);
+            toolStripMenuHelpManual.Text = "Мануал";
+            toolStripMenuHelpManual.TextImageRelation = TextImageRelation.Overlay;
+            toolStripMenuHelpManual.Click += toolStripMenuHelpManual_Click;
+            // 
+            // toolStripMenuHelpAbout
+            // 
+            toolStripMenuHelpAbout.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripMenuHelpAbout.Name = "toolStripMenuHelpAbout";
+            toolStripMenuHelpAbout.Size = new Size(173, 24);
+            toolStripMenuHelpAbout.Text = "О программе";
+            toolStripMenuHelpAbout.Click += toolStripMenuHelpAbout_Click;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(782, 353);
-            Controls.Add(statusStrip1);
+            Controls.Add(statusStripMain_GAE);
             Controls.Add(dataGridViewMain_GAE);
             Controls.Add(panelMainButtons_GAE);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -247,8 +277,9 @@
             Load += FormMain_Load;
             panelMainButtons_GAE.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridViewMain_GAE).EndInit();
-            statusStrip1.ResumeLayout(false);
-            statusStrip1.PerformLayout();
+            statusStripMain_GAE.ResumeLayout(false);
+            statusStripMain_GAE.PerformLayout();
+            contextMenuStripHelp_GAE.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -262,8 +293,8 @@
         private Button buttonSearch_GAE;
         private Button buttonHelp_GAE;
         private Button buttonStats_GAE;
-        private ToolTip toolTipMain;
-        private StatusStrip statusStrip1;
+        private ToolTip toolTipMain_GAE;
+        private StatusStrip statusStripMain_GAE;
         private ToolStripStatusLabel toolStripStatusLabelItemCount;
         private DataGridViewTextBoxColumn Number;
         private DataGridViewTextBoxColumn Region;
@@ -272,5 +303,8 @@
         private DataGridViewTextBoxColumn DriverName;
         private DataGridViewTextBoxColumn DriverPhoneNumber;
         private Button buttonFilter_GAE;
+        private ContextMenuStrip contextMenuStripHelp_GAE;
+        private ToolStripMenuItem toolStripMenuHelpManual;
+        private ToolStripMenuItem toolStripMenuHelpAbout;
     }
 }
