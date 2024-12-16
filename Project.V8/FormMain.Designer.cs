@@ -51,6 +51,7 @@
             contextMenuStripHelp_GAE = new ContextMenuStrip(components);
             toolStripMenuHelpManual = new ToolStripMenuItem();
             toolStripMenuHelpAbout = new ToolStripMenuItem();
+            buttonSettings_GAE = new Button();
             panelMainButtons_GAE.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewMain_GAE).BeginInit();
             statusStripMain_GAE.SuspendLayout();
@@ -59,6 +60,7 @@
             // 
             // panelMainButtons_GAE
             // 
+            panelMainButtons_GAE.Controls.Add(buttonSettings_GAE);
             panelMainButtons_GAE.Controls.Add(buttonHelp_GAE);
             panelMainButtons_GAE.Controls.Add(buttonStats_GAE);
             panelMainButtons_GAE.Controls.Add(buttonFilter_GAE);
@@ -261,6 +263,17 @@
             toolStripMenuHelpAbout.Text = "О программе";
             toolStripMenuHelpAbout.Click += toolStripMenuHelpAbout_Click;
             // 
+            // buttonSettings_GAE
+            // 
+            buttonSettings_GAE.FlatStyle = FlatStyle.Flat;
+            buttonSettings_GAE.Image = (Image)resources.GetObject("buttonSettings_GAE.Image");
+            buttonSettings_GAE.Location = new Point(661, 3);
+            buttonSettings_GAE.Name = "buttonSettings_GAE";
+            buttonSettings_GAE.Size = new Size(56, 55);
+            buttonSettings_GAE.TabIndex = 8;
+            toolTipMain_GAE.SetToolTip(buttonSettings_GAE, "Статистика");
+            buttonSettings_GAE.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -306,5 +319,6 @@
         private ContextMenuStrip contextMenuStripHelp_GAE;
         private ToolStripMenuItem toolStripMenuHelpManual;
         private ToolStripMenuItem toolStripMenuHelpAbout;
+        private Button buttonSettings_GAE;
     }
 }

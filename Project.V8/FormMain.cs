@@ -271,6 +271,16 @@ public partial class FormMain : Form
                 filterBrand.Add(i.ToString());
             foreach (var i in formFilter.checkedListBoxColor_GAE.CheckedItems)
                 filterColor.Add(i.ToString());
+            if (filterRegion.SequenceEqual(new List<string> { "Москва", "Тюмень", "Тверь", "Екатеринбург", "Санкт-Петербург", "Новосибирск" })
+             && filterBrand.SequenceEqual(new List<string> { "Volvo", "Audi", "Nissan", "BMW", "Mercedes", "Opel", "Lada" })
+             && filterColor.SequenceEqual(new List<string> { "Черный", "Белый", "Серый", "Синий", "Фиолетовый", "Красный", "Розовый", "Желтый", "Зеленый", "Коричневый" }))
+            {
+                buttonFilter_GAE.BackColor = SystemColors.Control;
+            }
+            else
+            {
+                buttonFilter_GAE.BackColor = System.Drawing.Color.Coral;
+            }
             ReloadTable();
         }
     }
@@ -286,6 +296,12 @@ public partial class FormMain : Form
             searchType = formSearch.comboBoxSearchType_GAE.Text;
             searchString = formSearch.textBoxSearchString_GAE.Text;
             searchExactMatch = formSearch.checkBoxExactMatch_GAE.Checked;
+
+            if (searchString == string.Empty)
+                buttonSearch_GAE.BackColor = SystemColors.Control;
+            else
+                buttonSearch_GAE.BackColor = System.Drawing.Color.Coral;
+
             ReloadTable();
         }
     }
