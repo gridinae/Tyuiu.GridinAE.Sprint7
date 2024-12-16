@@ -80,7 +80,7 @@
             // 
             panelSelectionFgColor_GAE.BackColor = Color.Black;
             panelSelectionFgColor_GAE.BorderStyle = BorderStyle.Fixed3D;
-            panelSelectionFgColor_GAE.Location = new Point(249, 161);
+            panelSelectionFgColor_GAE.Location = new Point(249, 163);
             panelSelectionFgColor_GAE.Name = "panelSelectionFgColor_GAE";
             panelSelectionFgColor_GAE.Size = new Size(22, 22);
             panelSelectionFgColor_GAE.TabIndex = 9;

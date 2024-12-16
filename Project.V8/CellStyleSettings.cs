@@ -7,7 +7,7 @@ namespace Project.V8;
 [Serializable]
 public class CellStyleSettings
 {
-    private string filePath = AppDomain.CurrentDomain.BaseDirectory + @"\Settings.bin";
+    private string filePath = AppDomain.CurrentDomain.BaseDirectory + @"\CellStyleSettings.bin";
 
     public Font Font { get; set; }
     public Color SelectionForeColor {  get; set; }
