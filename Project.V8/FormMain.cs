@@ -386,13 +386,7 @@ public partial class FormMain : Form
 
     private void toolStripMenuHelpManual_Click(object sender, EventArgs e)
     {
-        new Process
-        {
-            StartInfo = new ProcessStartInfo(AppDomain.CurrentDomain.BaseDirectory + @"\Manual.rtf")
-            {
-                UseShellExecute = true
-            }
-        }.Start();
+        new FormRTFViewer().ShowDialog();
     }
 
     private void toolStripMenuHelpAbout_Click(object sender, EventArgs e)
@@ -422,6 +416,23 @@ public partial class FormMain : Form
             new CellStyleSettings(formSettings.Font, formSettings.panelSelectionFgColor_GAE.BackColor, formSettings.panelSelectionBgColor_GAE.BackColor).Write();
         }
 
-        
+
+    }
+
+    private void FormMain_KeyDown(object sender, KeyEventArgs e)
+    {
+        switch (e.KeyCode)
+        {
+            case Keys.A:
+                buttonAdd_GAE_Click(new object(), EventArgs.Empty); break;
+            case Keys.Delete:
+                buttonRemove_GAE_Click(new object(), EventArgs.Empty); break;
+            case Keys.E:
+                buttonEdit_GAE_Click(new object(), EventArgs.Empty); break;
+            case Keys.S:
+                buttonSearch_GAE_Click(new object(), EventArgs.Empty); break;
+            case Keys.F:
+                buttonFilter_GAE_Click(new object(), EventArgs.Empty); break;
+        }
     }
 }

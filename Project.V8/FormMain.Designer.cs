@@ -285,11 +285,13 @@
             Controls.Add(dataGridViewMain_GAE);
             Controls.Add(panelMainButtons_GAE);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            KeyPreview = true;
             MinimumSize = new Size(800, 400);
             Name = "FormMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Project.V8";
             Load += FormMain_Load;
+            KeyDown += FormMain_KeyDown;
             panelMainButtons_GAE.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridViewMain_GAE).EndInit();
             statusStripMain_GAE.ResumeLayout(false);

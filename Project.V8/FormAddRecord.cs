@@ -34,5 +34,23 @@ namespace Project.V8
                 e.Handled = true;
             }
         }
+
+        private void FormAddRecord_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxNumber_GAE_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxNumber_GAE_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsAscii(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
     }
 }
