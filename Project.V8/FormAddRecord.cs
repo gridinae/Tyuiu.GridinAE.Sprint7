@@ -47,10 +47,15 @@ namespace Project.V8
 
         private void textBoxNumber_GAE_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (char.IsAscii(e.KeyChar))
+            if (System.Text.Encoding.UTF8.GetByteCount(new char[] { e.KeyChar }) > 1)
             {
                 e.Handled = true;
             }
+        }
+
+        private void textBoxNumber_GAE_TextChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

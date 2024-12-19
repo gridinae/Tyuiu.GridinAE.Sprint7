@@ -104,6 +104,7 @@
             textBoxNumber_GAE.Name = "textBoxNumber_GAE";
             textBoxNumber_GAE.Size = new Size(135, 27);
             textBoxNumber_GAE.TabIndex = 7;
+            textBoxNumber_GAE.TextChanged += textBoxNumber_GAE_TextChanged_1;
             textBoxNumber_GAE.KeyPress += textBoxNumber_GAE_KeyPress;
             // 
             // comboBoxRegion_GAE
