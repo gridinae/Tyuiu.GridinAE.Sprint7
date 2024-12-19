@@ -56,6 +56,7 @@ namespace Project.V8
         private void textBoxNumber_GAE_TextChanged_1(object sender, EventArgs e)
         {
 
+
         }
     }
 }
